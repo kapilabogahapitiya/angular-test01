@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="toDoApp" ng-controller="toDoController">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="css/style.css" media="screen" rel="stylesheet" type="text/css">
+<script src="js/angular.min.js"></script>
+</head>
+<body>
+
+<div id="myDIV" class="header">
+  <h2 style="margin:5px">My To Do List</h2>
+  <input type="text" id="myInput" ng-model = "list_name" placeholder="Title...">
+  <span ng-click = "newToDo()" class="addBtn">Add</span>  
+</div>
+<div class = "header">
+    <button class = "addBtn" style = "width:75%;" ng-click = "selectAll()">Select All</button>
+    <button class = "addBtn" ng-click = "deleteAll()">Delete</button>    
+</div>
+
+<ul id="myUL">
+    <li ng-class="list.class" ng-repeat = "list in lists" ng-click = "select($index)">
+        {{ list.name }}        
+        <span class="close" ng-click = "delete($index)">×</span>
+    </li>
+</ul>
+
+<script>
+
+function newElement() {
+  
+}
+angular.module('toDoApp', [])
+    .controller('toDoController', ['$scope', function($scope) {
+        $scope.lists = [];
+        $scope.list_name = "";       
+        $scope.newToDo = function(){
+            var list = {};
+            list.class = "";
+            if($scope.list_name === "") {
+                alert("Not Allowed Empty Field!");
+                return;
+            }         
+            list.name = $scope.list_name;
+            $scope.lists.push(list); 
+        };
+        $scope.select = function(index){
+            if($scope.lists[index].class === ""){
+                $scope.lists[index].class = "checked";
+            } else {
+                $scope.lists[index].class = "";
+            }
+            
+        };
+        $scope.delete = function(index){            
+            $scope.lists.splice(index, 1);
+        };
+        $scope.selectAll = function(){
+            angular.forEach($scope.lists, function(value, key) {
+                value.class = "checked";
+            });
+        };
+        $scope.deleteAll = function(){
+           var tempLists = $scope.lists;
+           $scope.lists = [];
+           angular.forEach(tempLists, function(value, key) {
+                if(value.class !== "checked"){
+                    $scope.lists.push(value);
+                }
+            });
+
+        };
+    }]);
+</script>
+
+</body>
+</html>
